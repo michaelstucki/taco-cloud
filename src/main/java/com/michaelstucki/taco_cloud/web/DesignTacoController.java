@@ -25,11 +25,11 @@ import com.michaelstucki.taco_cloud.TacoOrder;
 @RequestMapping("/design")
 // Persist the TacoOrder bean for the duration of the client's session (bean scope)
 @SessionAttributes("tacoOrder")
-// When the endpoint is called, this method is run
 public class DesignTacoController {
 
     // Spring MVC adds the list of ingredients to the Model instance
     // A Model instance ferries data from the controller to the view
+    // When the endpoint is called, this method is run
     @ModelAttribute
     public void addIngredientsToModel(Model model) {
         List<Ingredient> ingredients = Arrays.asList(
@@ -44,7 +44,7 @@ public class DesignTacoController {
                 new Ingredient("SLSA", "Salsa", Type.SAUCE),
                 new Ingredient("SRCR", "Sour Cream", Type.SAUCE)
         );
-
+        // Each ingredient Type is associated with a Collection ingredients of that Type
         Type[] types = Ingredient.Type.values();
         for (Type type : types) {
             model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
@@ -67,7 +67,7 @@ public class DesignTacoController {
     @ModelAttribute(name = "taco")
     public Taco taco() { return new Taco(); }
 
-    // A GET HTTP request to /path results in this method being called
+    // A GET HTTP request to /design path results in this method being called
     // This method returns the logical name of the view (i.e., the design.html file)
     @GetMapping
     public String showDesignForm() { return "design"; }
