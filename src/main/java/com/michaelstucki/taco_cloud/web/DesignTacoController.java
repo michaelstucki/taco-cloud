@@ -7,10 +7,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import com.michaelstucki.taco_cloud.Ingredient;
 import com.michaelstucki.taco_cloud.Ingredient.Type;
@@ -71,4 +68,22 @@ public class DesignTacoController {
     // This method returns the logical name of the view (i.e., the design.html file)
     @GetMapping
     public String showDesignForm() { return "design"; }
+
+    // A POST HTTP request to /design path results in this method being called
+    // When design.html form is submitted:
+    //  - its fields are bound to the properties of a Taco instance
+    //  - The Taco instance is passed to this method
+    // The design.html ingredients check boxes have textual (i.e., String) values (cf. th:value = ingredient.id)
+    //  But the Taco object's ingredients instance variable is a collection of type Ingredient.
+    //  So, we must convert from String to Ingredient; cf. IngredientByIdConverter class converter() method.
+    //  Spring MVC will use converter() when conversion of request parameters (String) to bound properties (Ingredient)
+    //  is needed.
+    // @ModelAttribute: use the TacoOrder instance annotated in the above order() method
+    @PostMapping
+    public String processTaco(Taco taco, @ModelAttribute TacoOrder tacoOrder) {
+        tacoOrder.addTaco(taco);
+        log.info("Process tac: {}", taco);
+        // Direct browser to go to /orders/current
+        return "redirect:/orders/current";
+    }
 }
