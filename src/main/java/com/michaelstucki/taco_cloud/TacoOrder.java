@@ -1,19 +1,32 @@
 package com.michaelstucki.taco_cloud;
 
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import org.hibernate.validator.constraints.CreditCardNumber;
+
 import java.util.List;
 import java.util.ArrayList;
 
 @Data
 public class TacoOrder {
 
+    @NotBlank
     private String deliveryName;
+    @NotBlank
     private String deliveryStreet;
+    @NotBlank
     private String deliveryCity;
+    @NotBlank
     private String deliveryState;
+    @NotBlank
     private String deliveryZip;
+    @CreditCardNumber(message="Not a valid credit card number")
     private String ccNumber;
+    @Pattern(regexp="^(0[1-9]|1[0-2])\\/(\\d{2})$\n", message="Must be formatted MM/YY")
     private String ccExpiration;
+    @Digits(integer=3, fraction=0, message="Invalid CVV")
     private String ccCVV;
 
     private List<Taco> tacos = new ArrayList<>();
