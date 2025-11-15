@@ -4,9 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import com.michaelstucki.taco_cloud.Ingredient;
@@ -80,9 +82,16 @@ public class DesignTacoController {
     //  is needed.
     // @ModelAttribute: use the TacoOrder instance annotated in the above order() method
     @PostMapping
-    public String processTaco(Taco taco, @ModelAttribute TacoOrder tacoOrder) {
+    // @Valid: tells Spring MVC to validate the submitted Taco instance
+    //  AFTER it's bound to the submitted form data and
+    //  BEFORE this method is called
+    //  Errors are capture in Errors instance
+    public String processTaco(@Valid Taco taco, Errors errors, @ModelAttribute TacoOrder tacoOrder) {
+        if (errors.hasErrors()) { return "design"; }
+
         tacoOrder.addTaco(taco);
         log.info("Process tac: {}", taco);
+
         // Direct browser to go to /orders/current
         return "redirect:/orders/current";
     }
